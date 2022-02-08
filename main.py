@@ -11,6 +11,8 @@ from PyQt5.QtWidgets import QMessageBox, QHBoxLayout
 from PyQt5.QtWidgets import QPushButton
 from src.table import Ui_tableWindow
 from src.spotify_analyzer import tracks_analyzer, top_artist, export_csv, export_ods
+import spotipy
+import os
 
 
 class Ui_MainWindow(object):
@@ -349,82 +351,77 @@ class Ui_MainWindow(object):
         self.export_button_group.buttonClicked.connect(self.export_choice)
 
         self.start_button.clicked.connect(self.start_analyze)
+
     
     def openWindow(self, dataframe):
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_tableWindow(dataframe)
         self.ui.setupUi(self.window)
-        #MainWindow.hide()
         self.window.show()
 
     def start_analyze(self):
 
-        if self.set_choice() != -2 and self.set_choice() != -3:
-
-            msg = QMessageBox()
-            msg.setWindowTitle("Ooooops!")
-            msg.setText("Choose an option first")
-            msg.setIcon(msg.Information)
-            msg.exec()
-            return
-
-        #self.start_button.setStyleSheet('background-color: orange')
-
-        if self.set_choice() == -2:
-            
-            dataframe = tracks_analyzer(self.time_choice(), self.song_num())
-
-            Ui_tableWindow(dataframe)
-            self.openWindow(dataframe)
-            
-
-            if self.export_choice() == -3:
-
-                export_ods(dataframe)
+        try:
+            if self.set_choice() != -2 and self.set_choice() != -3:
 
                 msg = QMessageBox()
-                msg.setWindowTitle("Yeah!")
-                msg.setText("Data succesfully exported in a beautiful .ods file!")
+                msg.setWindowTitle("Ooooops!")
+                msg.setText("Choose an option first")
                 msg.setIcon(msg.Information)
                 msg.exec()
+                return
 
-            if self.export_choice() == -2:
 
-                export_csv(dataframe)
+            if self.set_choice() == -2:
 
+                data_retrieved = tracks_analyzer(self.time_choice(), self.song_num())
+                dataframe = data_retrieved[0]
+                average_data = data_retrieved[1]   ##TODO show average stats
+
+                Ui_tableWindow(dataframe)
+                self.openWindow(dataframe)
+
+
+                if self.export_choice() == -3:
+
+                    export_ods(dataframe)
+                    export_ods(average_data)
+
+                if self.export_choice() == -2:
+
+                    export_csv(dataframe)
+                    export_csv(average_data)
+
+            if self.set_choice() == -3:
+
+                dataframe = top_artist(self.time_choice(), self.song_num())
+
+                Ui_tableWindow(dataframe)
+                self.openWindow(dataframe)
+
+                if self.export_choice() == -3:
+
+                    export_ods(dataframe)
+
+
+                if self.export_choice() == -2:
+
+                    export_csv(dataframe)
+
+                    msg = QMessageBox()
+                    msg.setWindowTitle("Yeah!")
+                    msg.setText("Data succesfully exported in a beautiful .csv file!")
+                    msg.setIcon(msg.Information)
+                    msg.exec()
+
+        except spotipy.oauth2.SpotifyOauthError:
                 msg = QMessageBox()
-                msg.setWindowTitle("Yeah!")
-                msg.setText("Data succesfully exported in a beautiful .csv file!")
-                msg.setIcon(msg.Information)
-                msg.exec()       
-
-
-        if self.set_choice() == -3:
-
-            dataframe = top_artist(self.time_choice(), self.song_num())
-
-            Ui_tableWindow(dataframe)
-            self.openWindow(dataframe)
-            
-            if self.export_choice() == -3:
-
-                export_ods(dataframe)
-
-                msg = QMessageBox()
-                msg.setWindowTitle("Yeah!")
-                msg.setText("Data succesfully exported in a beautiful .ods file!")
-                msg.setIcon(msg.Information)
+                msg.setWindowTitle("Ooops!")
+                msg.setText("Invalid credentials. Try again.")
+                msg.setIcon(msg.Critical)
                 msg.exec()
-            
-            if self.export_choice() == -2:
-                    
-                export_csv(dataframe)
-                    
-                msg = QMessageBox()
-                msg.setWindowTitle("Yeah!")
-                msg.setText("Data succesfully exported in a beautiful .csv file!")
-                msg.setIcon(msg.Information)
-                msg.exec()   
+                return
+
 
     def export_choice(self):
 
@@ -432,7 +429,7 @@ class Ui_MainWindow(object):
 
         return key
 
-        
+
     def set_choice(self):
         key = self.choice_button_group.checkedId()
         return key        
@@ -449,14 +446,23 @@ class Ui_MainWindow(object):
 
     def song_num(self):
         num = self.songs_num_line.text()
-        return num
+        if num == '':
+            msg = QMessageBox()
+            msg.setWindowTitle("Ooops!")
+            msg.setText("Enter the number of songs you want to analyze")
+            msg.setIcon(msg.Warning)
+            msg.exec()
+            return
+        else:
+            return num
 
 
     def load_credentials(self):
+
         msg = QMessageBox()
 
         if os.path.isfile('.env'):
-            
+
             dotenv_path = join(dirname(__file__), '.env')
             load_dotenv(dotenv_path)
             SPOTIPY_CLIENT_ID = os.environ.get("SPOTIPY_CLIENT_ID")
@@ -464,7 +470,7 @@ class Ui_MainWindow(object):
             SPOTIPY_REDIRECT_URI= os.environ.get("SPOTIPY_REDIRECT_URI")
 
             if SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET and SPOTIPY_REDIRECT_URI != "":
-                
+
                 msg.setWindowTitle("Yeah!")
                 msg.setText("Credentials successfully loaded")
                 msg.setIcon(msg.Information)
@@ -478,11 +484,19 @@ class Ui_MainWindow(object):
                 msg.setText("Credentials not valid. Pleae fill the form again.")
                 msg.setIcon(msg.Critical)
                 msg.exec()
+                if os.path.exists(".env"):
+                    os.remove(".env")
         else:
             msg.setWindowTitle("ERROR")
             msg.setText("Credentials not found. Pleae fill the form again.")
             msg.setIcon(msg.Critical)
             msg.exec()
+
+            if os.path.exists(".env"):
+                os.remove(".env")
+            self.client_line.setText('')
+            self.secret_line.setText('')
+            self.URI_line.setText('')
 
     def exit_app(self):
         sys.exit()
@@ -491,17 +505,20 @@ class Ui_MainWindow(object):
         with open ('.env', 'w') as config_file:
             user_input = self.client_line.text()
             config_file.write("SPOTIPY_CLIENT_ID='{}'\n".format(user_input))
+            return 1
 
     def save_client_secret(self):
         with open ('.env', 'a') as config_file:
             user_input = self.secret_line.text()
             config_file.write("SPOTIPY_CLIENT_SECRET='{}'\n".format(user_input))
+            return 1
 
     def save_URI(self):
         with open ('.env', 'a') as config_file:
             user_input = self.URI_line.text()
-            config_file.write("SPOTIPY_REDIRECT_URI='{}'".format(user_input))
-                
+            config_file.write("SPOTIPY_REDIRECT_URI='{}\n'".format(user_input))
+            return 1
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
