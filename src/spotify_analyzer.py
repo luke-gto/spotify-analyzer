@@ -7,6 +7,7 @@ from spotipy.oauth2 import SpotifyOAuth
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
 import pandas as pd
+from PyQt5.QtWidgets import QMessageBox
 
 def top_artist(time_range, songs_num):
     scope = 'user-top-read'
@@ -68,12 +69,13 @@ def tracks_analyzer(time_range, songs_num):
         'average_tempo':av_tempo, 'average_loudness_dB':av_loudness, 'average_speechiness_%':av_speechiness, 'average_instrument_%':av_instrument,
         'av_duration': av_duration}, index=[0])
 
-    return data_df
+    return data_df, av_df
 
 def track_feature(link):
 
     def stats_percentage(value):
-        return 100 * round(float(value)/float(1.0), 2)
+        return round(float(value)/float(1.0), 2) * 100
+
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth())
     analysis = sp.audio_features(link)
     danceability = stats_percentage((analysis[0]['danceability']))
@@ -93,6 +95,18 @@ def export_ods(dataframe):
 
     dataframe.to_excel(file_name)
 
+    msg = QMessageBox()
+    msg.setWindowTitle("Yeah!")
+    msg.setText("Data succesfully exported in a beautiful .ods file!")
+    msg.setIcon(msg.Information)
+    msg.exec()
+
 def export_csv(dataframe):
 
     dataframe.to_csv('spotify_data.csv')
+
+    msg = QMessageBox()
+    msg.setWindowTitle("Yeah!")
+    msg.setText("Data succesfully exported in a beautiful .ods file!")
+    msg.setIcon(msg.Information)
+    msg.exec()

@@ -10,7 +10,6 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import pandas as pd
-from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem, QHeaderView, QVBoxLayout
 import webbrowser
 
 class Ui_tableWindow(object):
@@ -39,7 +38,7 @@ class Ui_tableWindow(object):
         sizePolicy.setHeightForWidth(self.tableWidget.sizePolicy().hasHeightForWidth())
         self.tableWidget.setSizePolicy(sizePolicy)
         self.tableWidget.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
-        self.tableWidget.setGeometry(QtCore.QRect(0, 0, 866, 702))
+        self.tableWidget.setGeometry(QtCore.QRect(0, 0, 866, 745))
         self.tableWidget.setMouseTracking(True)
         self.tableWidget.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
@@ -53,12 +52,13 @@ class Ui_tableWindow(object):
         self.verticalLayout.addWidget(self.tableWidget)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 866, 30))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 866, 200))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
         self.load_data()
         
         self.retranslateUi(MainWindow)
@@ -101,3 +101,4 @@ def show_table(dataframe):
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+
