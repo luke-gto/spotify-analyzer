@@ -4,10 +4,17 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from spotipy.oauth2 import SpotifyClientCredentials
+#from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
 import pandas as pd
-from PyQt5.QtWidgets import QMessageBox
+#from PyQt5.QtWidgets import QMessageBox
+
+def normal_round(num, ndigits=0):
+        if ndigits == 0:
+            return int(num + 0.5)
+        else:
+            digit_value = 10 ** ndigits
+            return int(num * digit_value + 0.5) / digit_value
 
 def top_artist(time_range, songs_num):
     scope = 'user-top-read'
@@ -32,7 +39,6 @@ def tracks_analyzer(time_range, songs_num):
     scope = 'user-top-read'
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
     results = sp.current_user_top_tracks(limit=songs_num, offset=0, time_range=time_range)
-
     title_list = []
     artist_list = []
     link_list = []
@@ -56,13 +62,13 @@ def tracks_analyzer(time_range, songs_num):
 
     data_df = pd.concat([df, df2], axis=1)
 
-    av_dance = data_df['danceability_%'].mean(axis=0)
-    av_energy = data_df['energy_%'].mean(axis=0)
-    av_positivity = data_df['positivity_%'].mean(axis=0)
+    av_dance = normal_round(data_df['danceability_%'].mean(axis=0), 2)
+    av_energy = normal_round(data_df['energy_%'].mean(axis=0), 2)
+    av_positivity = normal_round(data_df['positivity_%'].mean(axis=0), 2)
     av_tempo = data_df['tempo_BPM'].mean(axis=0)
     av_loudness = data_df['loudness_dB'].mean(axis=0)
-    av_speechiness = data_df['speechiness_%'].mean(axis=0)
-    av_instrument = data_df['instrumentalness_%'].mean(axis=0)
+    av_speechiness = normal_round(data_df['speechiness_%'].mean(axis=0), 2)
+    av_instrument = normal_round(data_df['instrumentalness_%'].mean(axis=0), 2)
     av_duration = data_df['duration_seconds'].mean(axis=0)
 
     av_df = pd.DataFrame({'average_danceability_%':av_dance, 'average_energy_%':av_energy, 'average_positivity_%':av_positivity, 
@@ -71,10 +77,11 @@ def tracks_analyzer(time_range, songs_num):
 
     return data_df, av_df
 
+
 def track_feature(link):
 
     def stats_percentage(value):
-        return round(float(value)/float(1.0), 2) * 100
+        return normal_round((float(value)/1) * 100, 2)
 
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth())
     analysis = sp.audio_features(link)
@@ -91,22 +98,20 @@ def track_feature(link):
 
 def export_ods(dataframe):
 
-    file_name = 'spotify_data.xlsx'
+    dataframe.to_excel('spotify_data.xlsx')
 
-    dataframe.to_excel(file_name)
-
-    msg = QMessageBox()
-    msg.setWindowTitle("Yeah!")
-    msg.setText("Data succesfully exported in a beautiful .ods file!")
-    msg.setIcon(msg.Information)
-    msg.exec()
+    success_export(format='xlsx')
 
 def export_csv(dataframe):
 
     dataframe.to_csv('spotify_data.csv')
 
+    success_export(format='csv')
+
+def success_export(format):
+
     msg = QMessageBox()
     msg.setWindowTitle("Yeah!")
-    msg.setText("Data succesfully exported in a beautiful .ods file!")
+    msg.setText("Data succesfully exported in a beautiful " + format + " file!")
     msg.setIcon(msg.Information)
     msg.exec()

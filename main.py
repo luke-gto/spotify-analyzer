@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from queue import Empty
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -13,6 +14,7 @@ from src.table import Ui_tableWindow
 from src.spotify_analyzer import tracks_analyzer, top_artist, export_csv, export_ods
 import spotipy
 import os
+import pandas as pd
 
 
 class Ui_MainWindow(object):
@@ -353,9 +355,9 @@ class Ui_MainWindow(object):
         self.start_button.clicked.connect(self.start_analyze)
 
     
-    def openWindow(self, dataframe):
+    def openWindow(self, dataframe, av_df):
         self.window = QtWidgets.QMainWindow()
-        self.ui = Ui_tableWindow(dataframe)
+        self.ui = Ui_tableWindow(dataframe, av_df)
         self.ui.setupUi(self.window)
         self.window.show()
 
@@ -376,28 +378,27 @@ class Ui_MainWindow(object):
 
                 data_retrieved = tracks_analyzer(self.time_choice(), self.song_num())
                 dataframe = data_retrieved[0]
-                average_data = data_retrieved[1]   ##TODO show average stats
+                av_df = data_retrieved[1]
 
-                Ui_tableWindow(dataframe)
-                self.openWindow(dataframe)
+                Ui_tableWindow(dataframe, av_df)
+                self.openWindow(dataframe, av_df)
 
 
                 if self.export_choice() == -3:
-
+                    
                     export_ods(dataframe)
-                    export_ods(average_data)
 
                 if self.export_choice() == -2:
 
                     export_csv(dataframe)
-                    export_csv(average_data)
 
             if self.set_choice() == -3:
 
                 dataframe = top_artist(self.time_choice(), self.song_num())
-
-                Ui_tableWindow(dataframe)
-                self.openWindow(dataframe)
+                av_df = pd.DataFrame()
+                av_df.empty
+                Ui_tableWindow(dataframe, av_df)
+                self.openWindow(dataframe, av_df)
 
                 if self.export_choice() == -3:
 
@@ -516,7 +517,7 @@ class Ui_MainWindow(object):
     def save_URI(self):
         with open ('.env', 'a') as config_file:
             user_input = self.URI_line.text()
-            config_file.write("SPOTIPY_REDIRECT_URI='{}\n'".format(user_input))
+            config_file.write("SPOTIPY_REDIRECT_URI='{}'\n".format(user_input))
             return 1
 
 
