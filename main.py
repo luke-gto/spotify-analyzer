@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from queue import Empty
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -30,7 +28,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.time_range_label = QtWidgets.QLabel(self.centralwidget)
-        self.time_range_label.setGeometry(QtCore.QRect(270, 210, 165, 17))
+        self.time_range_label.setGeometry(QtCore.QRect(268, 380, 165, 17))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -58,24 +56,31 @@ class Ui_MainWindow(object):
         self.songs_num_line.setAlignment(QtCore.Qt.AlignCenter)
         self.songs_num_line.setObjectName("songs_num_line")
         self.analysis_type_label = QtWidgets.QLabel(self.centralwidget)
-        self.analysis_type_label.setGeometry(QtCore.QRect(240, 380, 211, 17))
+        self.analysis_type_label.setGeometry(QtCore.QRect(250, 210, 211, 17))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
         self.analysis_type_label.setFont(font)
         self.analysis_type_label.setObjectName("analysis_type_label")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(200, 420, 95, 33))
+        self.pushButton.setGeometry(QtCore.QRect(80, 240, 95, 33))
         self.pushButton.setCheckable(True)
         self.pushButton.setObjectName("pushButton")
         self.choice_button_group = QtWidgets.QButtonGroup(MainWindow)
         self.choice_button_group.setObjectName("choice_button_group")
         self.choice_button_group.addButton(self.pushButton)
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(400, 420, 95, 33))
+        self.pushButton_2.setGeometry(QtCore.QRect(520, 240, 95, 33))
         self.pushButton_2.setCheckable(True)
         self.pushButton_2.setObjectName("pushButton_2")
         self.choice_button_group.addButton(self.pushButton_2)
+
+        self.latest_tracks_button = QtWidgets.QPushButton(self.centralwidget)
+        self.latest_tracks_button.setGeometry(QtCore.QRect(240, 240, 221, 33))
+        self.latest_tracks_button.setCheckable(True)
+        self.latest_tracks_button.setObjectName("latest_tracks_button")
+        self.choice_button_group.addButton(self.latest_tracks_button)
+
         self.analysis_type_label_2 = QtWidgets.QLabel(self.centralwidget)
         self.analysis_type_label_2.setGeometry(QtCore.QRect(260, 470, 181, 17))
         font = QtGui.QFont()
@@ -291,7 +296,7 @@ class Ui_MainWindow(object):
         self.URI_line.setObjectName("URI_line")
         self.gridLayout.addWidget(self.URI_line, 5, 0, 1, 1)
         self.medium_button = QtWidgets.QPushButton(self.centralwidget)
-        self.medium_button.setGeometry(QtCore.QRect(298, 240, 110, 33))
+        self.medium_button.setGeometry(QtCore.QRect(296, 410, 110, 33))
         font = QtGui.QFont()
         font.setBold(False)
         font.setWeight(50)
@@ -303,7 +308,7 @@ class Ui_MainWindow(object):
         self.button_time_Group.setObjectName("button_time_Group")
         self.button_time_Group.addButton(self.medium_button)
         self.long_button = QtWidgets.QPushButton(self.centralwidget)
-        self.long_button.setGeometry(QtCore.QRect(522, 240, 95, 33))
+        self.long_button.setGeometry(QtCore.QRect(520, 410, 95, 33))
         font = QtGui.QFont()
         font.setBold(False)
         font.setWeight(50)
@@ -312,7 +317,7 @@ class Ui_MainWindow(object):
         self.long_button.setObjectName("long_button")
         self.button_time_Group.addButton(self.long_button)
         self.short_button = QtWidgets.QPushButton(self.centralwidget)
-        self.short_button.setGeometry(QtCore.QRect(82, 240, 102, 33))
+        self.short_button.setGeometry(QtCore.QRect(80, 410, 102, 33))
         font = QtGui.QFont()
         font.setBold(False)
         font.setWeight(50)
@@ -374,6 +379,12 @@ class Ui_MainWindow(object):
                 return
 
 
+            if self.set_choice() == -4:
+
+                dataframe = latest_played()
+                
+
+
             if self.set_choice() == -2:
 
                 data_retrieved = tracks_analyzer(self.time_choice(), self.song_num())
@@ -427,12 +438,13 @@ class Ui_MainWindow(object):
     def export_choice(self):
 
         key = self.export_button_group.checkedId()
-
+        
         return key
 
 
     def set_choice(self):
         key = self.choice_button_group.checkedId()
+        print(key)
         return key        
 
     def time_choice(self):
@@ -531,9 +543,13 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Top tracks"))
         self.pushButton_2.setStatusTip(_translate("MainWindow", "Retrieve your favorite artists"))
         self.pushButton_2.setText(_translate("MainWindow", "Top artists"))
+
+        self.latest_tracks_button.setStatusTip(_translate("MainWindow", "Browse your latest tracks you listened to"))
+        self.latest_tracks_button.setText(_translate("MainWindow", "Last played songs"))
+
         self.analysis_type_label_2.setText(_translate("MainWindow", "Export data - Optional"))
         self.csv_button.setText(_translate("MainWindow", ".csv File"))
-        self.ods_button.setText(_translate("MainWindow", ".ods File"))
+        self.ods_button.setText(_translate("MainWindow", ".xlsx File"))
         self.start_button.setText(_translate("MainWindow", "START"))
         self.saved_credentials_button.setStatusTip(_translate("MainWindow", "Only if you\'ve already used this tool"))
         self.saved_credentials_button.setText(_translate("MainWindow", "Load saved credentials"))
@@ -543,7 +559,7 @@ class Ui_MainWindow(object):
         self.URI_label.setText(_translate("MainWindow", "Enter Spotify redirect URI"))
         self.medium_button.setStatusTip(_translate("MainWindow", "Retrieve data from the last 6 months"))
         self.medium_button.setText(_translate("MainWindow", "Medium term "))
-        self.long_button.setStatusTip(_translate("MainWindow", "Retrieve data from several years of data and including all new data as it becomes available"))
+        self.long_button.setStatusTip(_translate("MainWindow", "Retrieve data from several years "))
         self.long_button.setText(_translate("MainWindow", "Long term "))
         self.short_button.setStatusTip(_translate("MainWindow", "Retrieve data from the last 4 weeks"))
         self.short_button.setText(_translate("MainWindow", "Short term "))

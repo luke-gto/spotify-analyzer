@@ -123,9 +123,9 @@ class Ui_tableWindow(object):
         self.tableWidget.itemDoubleClicked.connect(self.OpenLink)
 
     def open_average_window(self, dataframe):
-       self.mySubwindow=average_window(dataframe)
-       self.mySubwindow.createWindow(500,400)
-       self.mySubwindow.show()
+        self.mySubwindow=average_window(dataframe)
+        self.mySubwindow.createWindow(500,400)
+        self.mySubwindow.show()
 
 
     def OpenLink(self):
