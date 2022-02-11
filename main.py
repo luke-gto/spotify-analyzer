@@ -14,13 +14,14 @@ import spotipy
 import os
 import pandas as pd
 
+script_directory = os.path.dirname(os.path.realpath(__file__))
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(683, 732)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("resources/images/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(script_directory + "/resources/images/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setInputMethodHints(QtCore.Qt.ImhNone)
         MainWindow.setIconSize(QtCore.QSize(24, 24))
@@ -63,23 +64,18 @@ class Ui_MainWindow(object):
         self.analysis_type_label.setFont(font)
         self.analysis_type_label.setObjectName("analysis_type_label")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(80, 240, 95, 33))
+        self.pushButton.setGeometry(QtCore.QRect(150, 240, 95, 33))
         self.pushButton.setCheckable(True)
         self.pushButton.setObjectName("pushButton")
         self.choice_button_group = QtWidgets.QButtonGroup(MainWindow)
         self.choice_button_group.setObjectName("choice_button_group")
         self.choice_button_group.addButton(self.pushButton)
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(520, 240, 95, 33))
+        self.pushButton_2.setGeometry(QtCore.QRect(450, 240, 95, 33))
         self.pushButton_2.setCheckable(True)
         self.pushButton_2.setObjectName("pushButton_2")
         self.choice_button_group.addButton(self.pushButton_2)
 
-        self.latest_tracks_button = QtWidgets.QPushButton(self.centralwidget)
-        self.latest_tracks_button.setGeometry(QtCore.QRect(240, 240, 221, 33))
-        self.latest_tracks_button.setCheckable(True)
-        self.latest_tracks_button.setObjectName("latest_tracks_button")
-        self.choice_button_group.addButton(self.latest_tracks_button)
 
         self.analysis_type_label_2 = QtWidgets.QLabel(self.centralwidget)
         self.analysis_type_label_2.setGeometry(QtCore.QRect(260, 470, 181, 17))
@@ -379,12 +375,6 @@ class Ui_MainWindow(object):
                 return
 
 
-            if self.set_choice() == -4:
-
-                dataframe = latest_played()
-                
-
-
             if self.set_choice() == -2:
 
                 data_retrieved = tracks_analyzer(self.time_choice(), self.song_num())
@@ -474,9 +464,9 @@ class Ui_MainWindow(object):
 
         msg = QMessageBox()
 
-        if os.path.isfile('.env'):
+        if os.path.isfile(script_directory + '/.env'):
 
-            dotenv_path = join(dirname(__file__), '.env')
+            dotenv_path = join(script_directory, '.env')
             load_dotenv(dotenv_path)
             SPOTIPY_CLIENT_ID = os.environ.get("SPOTIPY_CLIENT_ID")
             SPOTIPY_CLIENT_SECRET = os.environ.get("SPOTIPY_CLIENT_SECRET")
@@ -497,16 +487,16 @@ class Ui_MainWindow(object):
                 msg.setText("Credentials not valid. Pleae fill the form again.")
                 msg.setIcon(msg.Critical)
                 msg.exec()
-                if os.path.exists(".env"):
-                    os.remove(".env")
+                if os.path.exists(script_directory + "/.env"):
+                    os.remove(script_directory + "/.env")
         else:
             msg.setWindowTitle("ERROR")
             msg.setText("Credentials not found. Pleae fill the form again.")
             msg.setIcon(msg.Critical)
             msg.exec()
 
-            if os.path.exists(".env"):
-                os.remove(".env")
+            if os.path.exists(script_directory + "/.env"):
+                os.remove(script_directory + "/.env")
             self.client_line.setText('')
             self.secret_line.setText('')
             self.URI_line.setText('')
@@ -515,19 +505,19 @@ class Ui_MainWindow(object):
         sys.exit()
 
     def save_client_id(self):    ### save user input
-        with open ('.env', 'w') as config_file:
+        with open (script_directory + '/.env', 'w') as config_file:
             user_input = self.client_line.text()
             config_file.write("SPOTIPY_CLIENT_ID='{}'\n".format(user_input))
             return 1
 
     def save_client_secret(self):
-        with open ('.env', 'a') as config_file:
+        with open (script_directory + "/.env", 'a') as config_file:
             user_input = self.secret_line.text()
             config_file.write("SPOTIPY_CLIENT_SECRET='{}'\n".format(user_input))
             return 1
 
     def save_URI(self):
-        with open ('.env', 'a') as config_file:
+        with open (script_directory + "/.env", 'a') as config_file:
             user_input = self.URI_line.text()
             config_file.write("SPOTIPY_REDIRECT_URI='{}'\n".format(user_input))
             return 1
@@ -543,9 +533,6 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Top tracks"))
         self.pushButton_2.setStatusTip(_translate("MainWindow", "Retrieve your favorite artists"))
         self.pushButton_2.setText(_translate("MainWindow", "Top artists"))
-
-        self.latest_tracks_button.setStatusTip(_translate("MainWindow", "Browse your latest tracks you listened to"))
-        self.latest_tracks_button.setText(_translate("MainWindow", "Last played songs"))
 
         self.analysis_type_label_2.setText(_translate("MainWindow", "Export data - Optional"))
         self.csv_button.setText(_translate("MainWindow", ".csv File"))
@@ -570,7 +557,6 @@ class Ui_MainWindow(object):
 
 
 if __name__ == '__main__':
-
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
