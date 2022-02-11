@@ -1,10 +1,10 @@
 from __future__ import print_function
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-#from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
 import pandas as pd
 from PyQt5.QtWidgets import QMessageBox
+import os
 
 def normal_round(num, ndigits=0):
         if ndigits == 0:
@@ -93,22 +93,31 @@ def track_feature(link):
 
     return danceability, energy, positivity, tempo, loudness, speechiness, instrumentalness, duration
 
-def export_ods(dataframe):
+def export_ods(dataframe, av_df, working_directory):
 
-    dataframe.to_excel('spotify_data.xlsx')
+    os.chdir(working_directory)
 
-    success_export(format='xlsx')
+    with pd.ExcelWriter('spotify_data.xlsx', 
+                        engine='xlsxwriter', 
+                        options={'strings_to_urls': True}) as writer:
 
-def export_csv(dataframe):
+        dataframe.to_excel(writer, sheet_name='Top_tracks')
+        av_df.to_excel(writer, sheet_name='Average_values')
+
+    success_export(working_directory)
+
+def export_csv(dataframe, av_df, working_directory):
+    
+    os.chdir(working_directory)
 
     dataframe.to_csv('spotify_data.csv')
+    av_df.to_csv('average_values_spotify_data.csv')
 
-    success_export(format='csv')
+    success_export(working_directory)
 
-def success_export(format):
-
+def success_export(directory):
     msg = QMessageBox()
     msg.setWindowTitle("Yeah!")
-    msg.setText("Data succesfully exported in a beautiful " + format + " file!")
+    msg.setText("Data succesfully exported in " + directory)
     msg.setIcon(msg.Information)
     msg.exec()

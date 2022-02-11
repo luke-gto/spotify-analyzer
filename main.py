@@ -4,7 +4,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import sys
 import os
-from os.path import join, dirname
+from os.path import join
 from dotenv import load_dotenv
 from PyQt5.QtWidgets import QMessageBox, QHBoxLayout
 from PyQt5.QtWidgets import QPushButton
@@ -15,6 +15,13 @@ import os
 import pandas as pd
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
+working_directory = script_directory + '/spotify-analyzer-data'
+
+def setup_directories():
+    if os.path.isdir(working_directory):
+        pass
+    else:
+        os.mkdir(working_directory)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -346,6 +353,7 @@ class Ui_MainWindow(object):
         self.client_line.editingFinished.connect(self.save_client_id)
         self.secret_line.editingFinished.connect(self.save_client_secret)
         self.URI_line.editingFinished.connect(self.save_URI)
+        
 
         self.saved_credentials_button.clicked.connect(self.load_credentials)
 
@@ -387,11 +395,11 @@ class Ui_MainWindow(object):
 
                 if self.export_choice() == -3:
                     
-                    export_ods(dataframe)
+                    export_ods(dataframe, av_df, working_directory)
 
                 if self.export_choice() == -2:
 
-                    export_csv(dataframe)
+                    export_csv(dataframe, av_df, working_directory)
 
             if self.set_choice() == -3:
 
@@ -403,18 +411,13 @@ class Ui_MainWindow(object):
 
                 if self.export_choice() == -3:
 
-                    export_ods(dataframe)
+                    export_ods(dataframe, working_directory)
 
 
                 if self.export_choice() == -2:
 
-                    export_csv(dataframe)
+                    export_csv(dataframe, working_directory)
 
-                    msg = QMessageBox()
-                    msg.setWindowTitle("Yeah!")
-                    msg.setText("Data succesfully exported in a beautiful .csv file!")
-                    msg.setIcon(msg.Information)
-                    msg.exec()
 
         except spotipy.oauth2.SpotifyOauthError:
                 msg = QMessageBox()
@@ -464,9 +467,9 @@ class Ui_MainWindow(object):
 
         msg = QMessageBox()
 
-        if os.path.isfile(script_directory + '/.env'):
+        if os.path.isfile(working_directory + '/.env'):
 
-            dotenv_path = join(script_directory, '.env')
+            dotenv_path = join(working_directory, '.env')
             load_dotenv(dotenv_path)
             SPOTIPY_CLIENT_ID = os.environ.get("SPOTIPY_CLIENT_ID")
             SPOTIPY_CLIENT_SECRET = os.environ.get("SPOTIPY_CLIENT_SECRET")
@@ -487,16 +490,16 @@ class Ui_MainWindow(object):
                 msg.setText("Credentials not valid. Pleae fill the form again.")
                 msg.setIcon(msg.Critical)
                 msg.exec()
-                if os.path.exists(script_directory + "/.env"):
-                    os.remove(script_directory + "/.env")
+                if os.path.exists(working_directory + "/.env"):
+                    os.remove(working_directory + "/.env")
         else:
             msg.setWindowTitle("ERROR")
             msg.setText("Credentials not found. Pleae fill the form again.")
             msg.setIcon(msg.Critical)
             msg.exec()
 
-            if os.path.exists(script_directory + "/.env"):
-                os.remove(script_directory + "/.env")
+            if os.path.exists(working_directory + "/.env"):
+                os.remove(working_directory + "/.env")
             self.client_line.setText('')
             self.secret_line.setText('')
             self.URI_line.setText('')
@@ -505,19 +508,19 @@ class Ui_MainWindow(object):
         sys.exit()
 
     def save_client_id(self):    ### save user input
-        with open (script_directory + '/.env', 'w') as config_file:
+        with open (working_directory + '/.env', 'w') as config_file:
             user_input = self.client_line.text()
             config_file.write("SPOTIPY_CLIENT_ID='{}'\n".format(user_input))
             return 1
 
     def save_client_secret(self):
-        with open (script_directory + "/.env", 'a') as config_file:
+        with open (working_directory + "/.env", 'a') as config_file:
             user_input = self.secret_line.text()
             config_file.write("SPOTIPY_CLIENT_SECRET='{}'\n".format(user_input))
             return 1
 
     def save_URI(self):
-        with open (script_directory + "/.env", 'a') as config_file:
+        with open (working_directory + "/.env", 'a') as config_file:
             user_input = self.URI_line.text()
             config_file.write("SPOTIPY_REDIRECT_URI='{}'\n".format(user_input))
             return 1
@@ -557,6 +560,7 @@ class Ui_MainWindow(object):
 
 
 if __name__ == '__main__':
+    setup_directories()
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
