@@ -38,9 +38,9 @@ bdist_dmg_options = {
 executables = [Executable("main.py", base=base, target_name="test_pyqt5")]
 
 setup(
-    name="simple_PyQt5",
-    version="0.3",
-    description="Sample cx_Freeze PyQt5 script",
+    name="Spotify Data Retriever",
+    version="0.1",
+    description="A buggy Spotify Data Retriever",
     options={
         "build_exe": build_exe_options,
         "bdist_mac": bdist_mac_options,
