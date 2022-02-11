@@ -12,7 +12,7 @@ This tools uses the official Spotify Web API and in order to access them you hav
 
 4.  Now you have your personal App, congrats. Click on "EDIT SETTINGS" and in the "Redirect URIs" field enter this string: 
 
-```http://localhost:8888/callback/```
+      ```http://localhost:8888/callback/```
 
 5. Click on "SAVE".
 
