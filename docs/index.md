@@ -1,37 +1,29 @@
-## Welcome to GitHub Pages
+## Welcome to Spotify Analyzer
 
-You can use the [editor on GitHub](https://github.com/luke-gto/spotify-analyzer/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
+You can use this tool to retrieve data about your listening history on Spotify, export them in a .csv or .xlsx file and do some lovely analysis.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+This tools uses the official Spotify Web API and in order to access them you have to:
 
-### Markdown
+1. Go to the [Dashboard](https://developer.spotify.com/dashboard/login) page at the *Spotify Developer website* and, if necessary, log in
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+2. Click on "Create an App"
+![](imgs/create_app.png)
 
-```markdown
-Syntax highlighted code block
+3. Choose a name for the app and click on "Create":
 
-# Header 1
-## Header 2
-### Header 3
+![](imgs/20220211-184747.png)
+4.  Now you have your personal App, congrats. Click on "EDIT SETTINGS" and in the "Redirect URIs" field enter this string: 
 
-- Bulleted
-- List
+```http://localhost:8888/callback/```
 
-1. Numbered
-2. List
+5. Click on "SAVE"
 
-**Bold** and _Italic_ and `Code` text
+6. Copy the Client ID and the Secret ID
+![](imgs/20220211-185711.png) 
 
-[Link](url) and ![Image](src)
-```
+7. Open the *Spotify Data Retriever* app and past them in the forms:
+![](imgs/20220211-185826.png) 
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+8. Choose the options you like and press "START"
 
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/luke-gto/spotify-analyzer/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+9. Profit(?)
