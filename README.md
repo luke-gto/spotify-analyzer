@@ -7,11 +7,11 @@ This tools uses the official Spotify Web API and in order to access them you hav
 1. Go to the [Dashboard](https://developer.spotify.com/dashboard/login) page at the *Spotify Developer website* and, if necessary, log in
 
 2. Click on "Create an App"
-![](imgs/create_app.png)
+![](docs/imgs/create_app.png)
 
 3. Choose a name for the app and click on "Create":
 
-![](imgs/20220211-184747.png)
+![](docs/imgs/20220211-184747.png)
 4.  Now you have your personal App, congrats. Click on "EDIT SETTINGS" and in the "Redirect URIs" field enter this string: 
 
 ```http://localhost:8888/callback/```
@@ -19,10 +19,10 @@ This tools uses the official Spotify Web API and in order to access them you hav
 5. Click on "SAVE"
 
 6. Copy the Client ID and the Secret ID
-![](imgs/20220211-185711.png) 
+![](docs/imgs/20220211-185711.png) 
 
 7. Open the *Spotify Data Retriever* app and past them in the forms:
-![](imgs/20220211-185826.png) 
+![](docs/imgs/20220211-185826.png) 
 
 8. Choose the options you like and press "START"
 
