@@ -23,3 +23,6 @@ This tools uses the official Spotify Web API and in order to access them you hav
 8. Choose the options you like and press "START"
 
 9. Profit(?)
+
+
+<a href="https://www.flaticon.com/free-icons/data-quality" title="data quality icons">Data quality icons created by juicy_fish - Flaticon</a>
