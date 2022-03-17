@@ -6,6 +6,7 @@ import sys
 import os
 from os.path import join
 from dotenv import load_dotenv
+import dotenv
 from PyQt5.QtWidgets import QMessageBox, QHBoxLayout
 from PyQt5.QtWidgets import QPushButton
 from src.table import Ui_tableWindow
@@ -13,6 +14,8 @@ from src.spotify_analyzer import tracks_analyzer, top_artist, export_csv, export
 import spotipy
 import os
 import pandas as pd
+import webbrowser
+
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
 working_directory = script_directory + '/spotify-analyzer-data'
@@ -349,6 +352,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.actionExit.triggered.connect(self.exit_app)
+        self.actionGuide.triggered.connect(self.open_guide)
 
         self.client_line.editingFinished.connect(self.save_client_id)
         self.secret_line.editingFinished.connect(self.save_client_secret)
@@ -363,6 +367,8 @@ class Ui_MainWindow(object):
 
         self.start_button.clicked.connect(self.start_analyze)
 
+    def open_guide(self):
+        webbrowser.open('https://luke-gto.github.io/spotify-analyzer/')
     
     def openWindow(self, dataframe, av_df):
         self.window = QtWidgets.QMainWindow()
@@ -373,6 +379,7 @@ class Ui_MainWindow(object):
     def start_analyze(self):
 
         try:
+            self.load_credentials()
             if self.set_choice() != -2 and self.set_choice() != -3:
 
                 msg = QMessageBox()
@@ -431,13 +438,11 @@ class Ui_MainWindow(object):
     def export_choice(self):
 
         key = self.export_button_group.checkedId()
-        
         return key
 
 
     def set_choice(self):
         key = self.choice_button_group.checkedId()
-        print(key)
         return key        
 
     def time_choice(self):
@@ -478,7 +483,7 @@ class Ui_MainWindow(object):
             if SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET and SPOTIPY_REDIRECT_URI != "":
 
                 msg.setWindowTitle("Yeah!")
-                msg.setText("Credentials successfully loaded")
+                msg.setText("Valid credentials found!")
                 msg.setIcon(msg.Information)
                 msg.exec()
                 self.client_line.setText(SPOTIPY_CLIENT_ID)
@@ -508,22 +513,22 @@ class Ui_MainWindow(object):
         sys.exit()
 
     def save_client_id(self):    ### save user input
-        with open (working_directory + '/.env', 'w') as config_file:
-            user_input = self.client_line.text()
-            config_file.write("SPOTIPY_CLIENT_ID='{}'\n".format(user_input))
-            return 1
+        config_file = working_directory + "/.env"
+        user_input = self.client_line.text()
+        dotenv.set_key(config_file, "SPOTIPY_CLIENT_ID", user_input)
+        return 1
 
     def save_client_secret(self):
-        with open (working_directory + "/.env", 'a') as config_file:
-            user_input = self.secret_line.text()
-            config_file.write("SPOTIPY_CLIENT_SECRET='{}'\n".format(user_input))
-            return 1
+        config_file = working_directory + "/.env"
+        user_input = self.secret_line.text()
+        dotenv.set_key(config_file, "SPOTIPY_CLIENT_SECRET", user_input)
+        return 1
 
     def save_URI(self):
-        with open (working_directory + "/.env", 'a') as config_file:
-            user_input = self.URI_line.text()
-            config_file.write("SPOTIPY_REDIRECT_URI='{}'\n".format(user_input))
-            return 1
+        config_file = working_directory + "/.env"
+        user_input = self.URI_line.text()
+        dotenv.set_key(config_file, "SPOTIPY_REDIRECT_URI", user_input)
+        return 1
 
 
     def retranslateUi(self, MainWindow):

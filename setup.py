@@ -7,20 +7,12 @@ try:
 except ImportError:
     include_files = []
 else:
-    # Inclusion of extra plugins (new in cx_Freeze 6.8b2)
-    # cx_Freeze imports automatically the following plugins depending of the
-    # use of some modules:
-    # imageformats - QtGui
-    # platforms - QtGui
-    # mediaservice - QtMultimedia
-    # printsupport - QtPrintSupport
-    #
-    # So, "platforms" is used here for demonstration purposes.
     include_files = get_qt_plugins_paths("PyQt5", "platforms")
 
-base = None
-if sys.platform == "win32":
-    base = "Win32GUI"
+base=None
+
+if sys.platform == 'Win32':
+    base='Win32GUI'
 
 build_exe_options = {
     "excludes": ["tkinter"],
@@ -35,12 +27,12 @@ bdist_dmg_options = {
     "volume_label": "TEST",
 }
 
-executables = [Executable("main.py", base=base, target_name="test_pyqt5")]
+executables = [Executable("main.py", base=base, target_name="Spotify_Data_Retriever.exe")]
 
 setup(
-    name="simple_PyQt5",
-    version="0.3",
-    description="Sample cx_Freeze PyQt5 script",
+    name="Spotify Data Retriever",
+    version="0.1",
+    description="A buggy Spotify Data Retriever",
     options={
         "build_exe": build_exe_options,
         "bdist_mac": bdist_mac_options,
