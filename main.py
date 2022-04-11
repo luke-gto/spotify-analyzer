@@ -16,8 +16,6 @@ import os
 import pandas as pd
 import webbrowser
 
-
-
 script_directory = os.path.dirname(os.path.realpath(__file__))
 working_directory = script_directory + '/spotify-analyzer-data'
 
@@ -373,8 +371,17 @@ class Ui_MainWindow(object):
         self.button_time_Group.buttonClicked.connect(self.time_choice)
         self.choice_button_group.buttonClicked.connect(self.set_choice)
         self.export_button_group.buttonClicked.connect(self.export_choice)
-
         self.start_button.clicked.connect(self.start_analyze)
+
+
+    def conflict_check(self): ### check whether last played and time range is selecres at the same time --- but how?
+        if self.history_button.pressed and self.button_time_Group.buttonPressed:
+            msg = QMessageBox()
+            msg.setWindowTitle("Ooops!")
+            msg.setText("No time range available for latest tracks data")
+            msg.setIcon(msg.Critical)
+            msg.exec()
+
 
     def open_guide(self):
         webbrowser.open('https://luke-gto.github.io/spotify-analyzer/')
@@ -435,12 +442,14 @@ class Ui_MainWindow(object):
                     export_csv(dataframe, working_directory)
 
             if self.set_choice() == -4:
-                data_retrieved = last_played()
+
+                data_retrieved = last_played(self.song_num())
                 dataframe = data_retrieved[0]
                 av_df = data_retrieved[1]
 
                 Ui_tableWindow(dataframe, av_df)
                 self.openWindow(dataframe, av_df)
+
                 if self.export_choice() == -3:
 
                     export_ods(dataframe, working_directory)
@@ -448,8 +457,6 @@ class Ui_MainWindow(object):
                 if self.export_choice() == -2:
 
                     export_csv(dataframe, working_directory)
-
-
 
         except spotipy.oauth2.SpotifyOauthError:
                 msg = QMessageBox()
@@ -468,7 +475,8 @@ class Ui_MainWindow(object):
 
     def set_choice(self): ### first row buttons --- which one is pressed?
         key = self.choice_button_group.checkedId()
-        return key        
+        return key      
+
 
     def time_choice(self):
         key = self.button_time_Group.checkedId()
