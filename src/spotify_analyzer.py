@@ -13,10 +13,10 @@ def normal_round(num, ndigits=0):
             digit_value = 10 ** ndigits
             return int(num * digit_value + 0.5) / digit_value
 
-def last_played():
+def last_played(songs_num):
     scope = "user-read-recently-played"
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
-    results = sp.current_user_recently_played()
+    results = sp.current_user_recently_played(limit=songs_num)
     album_list = []
     title_list = []
     artist_list = []
