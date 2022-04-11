@@ -13,6 +13,54 @@ def normal_round(num, ndigits=0):
             digit_value = 10 ** ndigits
             return int(num * digit_value + 0.5) / digit_value
 
+def last_played():
+    scope = "user-read-recently-played"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
+    results = sp.current_user_recently_played(limit=1)
+    album_list = []
+    title_list = []
+    artist_list = []
+    date_list = []
+    link_list = []
+    uri_list = []
+    feature_list = []
+
+    for item in (results['items']):
+        title_list.append(item['track']['name'])
+        artist_list.append(item['track']['album']['artists'][0]['name'])
+        album_list.append(item['track']['album']['name'])
+        date_list.append(item['played_at'])
+        link_list.append(item['track']['external_urls']['spotify'])
+        uri_list.append(item['track']['uri'])
+
+    df = pd.DataFrame({'track_title':title_list, 'artist':artist_list, 'album':album_list, 'date': date_list, 'link': link_list, 'uri': uri_list})
+
+    for item in uri_list:
+
+        feature_list.append(track_feature(item))
+
+    df2 = pd.DataFrame(feature_list, columns=('danceability_%','energy_%', 'positivity_%', 'tempo_BPM', 'loudness_dB',
+            'speechiness_%', 'instrumentalness_%', 'duration_seconds'))
+
+    data_df = pd.concat([df, df2], axis=1)
+
+    av_dance = normal_round(data_df['danceability_%'].mean(axis=0), 2)
+    av_energy = normal_round(data_df['energy_%'].mean(axis=0), 2)
+    av_positivity = normal_round(data_df['positivity_%'].mean(axis=0), 2)
+    av_tempo = data_df['tempo_BPM'].mean(axis=0)
+    av_loudness = data_df['loudness_dB'].mean(axis=0)
+    av_speechiness = normal_round(data_df['speechiness_%'].mean(axis=0), 2)
+    av_instrument = normal_round(data_df['instrumentalness_%'].mean(axis=0), 2)
+    av_duration = data_df['duration_seconds'].mean(axis=0)
+
+    av_df = pd.DataFrame({'average_danceability_%':av_dance, 'average_energy_%':av_energy, 'average_positivity_%':av_positivity, 
+        'average_tempo':av_tempo, 'average_loudness_dB':av_loudness, 'average_speechiness_%':av_speechiness, 'average_instrument_%':av_instrument,
+        'av_duration': av_duration}, index=[0])
+
+
+    return data_df, av_df
+
+
 def top_artist(time_range, songs_num):
     scope = 'user-top-read'
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
