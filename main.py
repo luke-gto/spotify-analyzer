@@ -19,6 +19,8 @@ import webbrowser
 script_directory = os.path.dirname(os.path.realpath(__file__))
 working_directory = script_directory + '/spotify-analyzer-data'
 
+print(working_directory)
+
 def setup_directories():
     if os.path.isdir(working_directory):
         pass
@@ -418,11 +420,11 @@ class Ui_MainWindow(object):
 
                 if self.export_choice() == -3:
                     
-                    export_ods(dataframe, av_df, working_directory)
+                    export_ods(dataframe, av_df, working_directory, file_name='top_tracks')
 
                 if self.export_choice() == -2:
 
-                    export_csv(dataframe, av_df, working_directory)
+                    export_csv(dataframe, av_df, working_directory, file_name='top_tracks')
 
             if self.set_choice() == -3:
 
@@ -434,12 +436,12 @@ class Ui_MainWindow(object):
 
                 if self.export_choice() == -3:
 
-                    export_ods(dataframe, working_directory)
+                    export_ods(dataframe, working_directory, file_name='top_artists')
 
 
                 if self.export_choice() == -2:
 
-                    export_csv(dataframe, working_directory)
+                    export_csv(dataframe, working_directory, file_name='top_artists')
 
             if self.set_choice() == -4:
 
@@ -452,11 +454,11 @@ class Ui_MainWindow(object):
 
                 if self.export_choice() == -3:
 
-                    export_ods(dataframe, working_directory)
+                    export_ods(dataframe, av_df, working_directory, file_name='tracks_history')
 
                 if self.export_choice() == -2:
 
-                    export_csv(dataframe, working_directory)
+                    export_csv(dataframe, av_df, working_directory, file_name='tracks_history')
 
         except spotipy.oauth2.SpotifyOauthError:
                 msg = QMessageBox()

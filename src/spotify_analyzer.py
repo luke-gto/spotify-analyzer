@@ -5,6 +5,14 @@ import spotipy
 import pandas as pd
 from PyQt5.QtWidgets import QMessageBox
 import os
+from datetime import datetime
+
+def get_time():
+    now = datetime.now()
+ 
+    dt_string = now.strftime("%d-%m-%Y-%H:%M:%S")
+
+    return dt_string
 
 def normal_round(num, ndigits=0):
         if ndigits == 0:
@@ -141,11 +149,11 @@ def track_feature(link):
 
     return danceability, energy, positivity, tempo, loudness, speechiness, instrumentalness, duration
 
-def export_ods(dataframe, av_df, working_directory):
+def export_ods(dataframe, av_df, working_directory, file_name):
 
     os.chdir(working_directory)
 
-    with pd.ExcelWriter('spotify_data.xlsx', 
+    with pd.ExcelWriter('spotify-' + file_name + '-' + str(get_time()) + '.xlsx', 
                         engine='xlsxwriter', 
                         options={'strings_to_urls': True}) as writer:
 
@@ -154,11 +162,11 @@ def export_ods(dataframe, av_df, working_directory):
 
     success_export(working_directory)
 
-def export_csv(dataframe, av_df, working_directory):
+def export_csv(dataframe, av_df, working_directory, file_name):
     
     os.chdir(working_directory)
 
-    dataframe.to_csv('spotify_data.csv')
+    dataframe.to_csv('spotify-' + file_name + '-' + get_time() + '.csv')
     av_df.to_csv('average_values_spotify_data.csv')
 
     success_export(working_directory)
