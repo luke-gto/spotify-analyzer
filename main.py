@@ -10,11 +10,12 @@ import dotenv
 from PyQt5.QtWidgets import QMessageBox, QHBoxLayout
 from PyQt5.QtWidgets import QPushButton
 from src.table import Ui_tableWindow
-from src.spotify_analyzer import tracks_analyzer, top_artist, export_csv, export_ods
+from src.spotify_analyzer import tracks_analyzer, top_artist, last_played, export_csv, export_ods
 import spotipy
 import os
 import pandas as pd
 import webbrowser
+
 
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
@@ -85,6 +86,14 @@ class Ui_MainWindow(object):
         self.pushButton_2.setCheckable(True)
         self.pushButton_2.setObjectName("pushButton_2")
         self.choice_button_group.addButton(self.pushButton_2)
+
+
+        self.history_button = QtWidgets.QPushButton(self.centralwidget)
+        self.history_button.setGeometry(QtCore.QRect(287, 240, 120, 33))
+        self.history_button.setCheckable(True)
+        self.history_button.setObjectName("history_button")
+        self.choice_button_group.addButton(self.history_button)
+
 
 
         self.analysis_type_label_2 = QtWidgets.QLabel(self.centralwidget)
@@ -380,7 +389,7 @@ class Ui_MainWindow(object):
 
         try:
             self.load_credentials()
-            if self.set_choice() != -2 and self.set_choice() != -3:
+            if self.set_choice() != -2 and self.set_choice() != -3 and self.set_choice() != -4:
 
                 msg = QMessageBox()
                 msg.setWindowTitle("Ooooops!")
@@ -425,6 +434,22 @@ class Ui_MainWindow(object):
 
                     export_csv(dataframe, working_directory)
 
+            if self.set_choice() == -4:
+                data_retrieved = last_played()
+                dataframe = data_retrieved[0]
+                av_df = data_retrieved[1]
+
+                Ui_tableWindow(dataframe, av_df)
+                self.openWindow(dataframe, av_df)
+                if self.export_choice() == -3:
+
+                    export_ods(dataframe, working_directory)
+
+                if self.export_choice() == -2:
+
+                    export_csv(dataframe, working_directory)
+
+
 
         except spotipy.oauth2.SpotifyOauthError:
                 msg = QMessageBox()
@@ -441,7 +466,7 @@ class Ui_MainWindow(object):
         return key
 
 
-    def set_choice(self):
+    def set_choice(self): ### first row buttons --- which one is pressed?
         key = self.choice_button_group.checkedId()
         return key        
 
@@ -541,6 +566,10 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Top tracks"))
         self.pushButton_2.setStatusTip(_translate("MainWindow", "Retrieve your favorite artists"))
         self.pushButton_2.setText(_translate("MainWindow", "Top artists"))
+
+        self.history_button.setStatusTip(_translate("MainWindow", "Retrieve your last played songs"))
+        self.history_button.setText(_translate("MainWindow", "Last played songs"))
+
 
         self.analysis_type_label_2.setText(_translate("MainWindow", "Export data - Optional"))
         self.csv_button.setText(_translate("MainWindow", ".csv File"))
