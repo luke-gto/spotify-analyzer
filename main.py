@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from tkinter import Widget
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -17,10 +16,6 @@ import spotipy
 import os
 import pandas as pd
 import webbrowser
-
-import itertools
-import threading
-import time
 import sys
 
 
@@ -126,8 +121,6 @@ class Ui_MainWindow(object):
 
         self.reload_button = QtWidgets.QPushButton(self.centralwidget)
         self.reload_button.setGeometry(QtCore.QRect(240, 620, 231, 51))
-
-
 
 
         palette2 = QtGui.QPalette()
@@ -416,7 +409,7 @@ class Ui_MainWindow(object):
 
     def start_analyze(self):
 
-        if self.button_time_Group.checkedId() != 1 and self.set_choice() == -4: ### check whether last played and time range is selected at the same time
+        if self.button_time_Group.checkedId() == 4 or self.button_time_Group.checkedId() == 2 or self.button_time_Group.checkedId() == 3 and self.set_choice() == -4: ### check whether last played and time range is selected at the same time
             msg = QMessageBox()
             msg.setWindowTitle("Ooops!")
             msg.setText("The time range option is not available for 'Last played songs'")
@@ -445,19 +438,6 @@ class Ui_MainWindow(object):
                 msg.exec()
                 return
 
-            done = False ############# sperimental animation starts here
-            #here is the animation
-            def animate():
-                for c in itertools.cycle(['|', '/', '-', '\\']):
-                    if done:
-                        break
-                    sys.stdout.write('\rloading ' + c)
-                    sys.stdout.flush()
-                    time.sleep(0.1)
-                sys.stdout.write('\rDone!     ')
-            t = threading.Thread(target=animate)
-            t.start()
-
             if self.set_choice() == -2:
 
                 data_retrieved = tracks_analyzer(self.time_choice(), self.song_num())
@@ -469,14 +449,13 @@ class Ui_MainWindow(object):
 
 
                 if self.export_choice() == -3:
-                    
+
                     export_ods(dataframe, av_df, working_directory, file_name='top_tracks')
 
                 if self.export_choice() == -2:
 
                     export_csv(dataframe, av_df, working_directory, file_name='top_tracks')
 
-                done = True
 
             if self.set_choice() == -3:
 
@@ -495,8 +474,6 @@ class Ui_MainWindow(object):
 
                     export_csv(dataframe, working_directory, file_name='top_artists')
 
-                done = True
-
 
             if self.set_choice() == -4:
 
@@ -514,8 +491,6 @@ class Ui_MainWindow(object):
                 if self.export_choice() == -2:
 
                     export_csv(dataframe, av_df, working_directory, file_name='tracks_history')
-
-                done = True
 
         except spotipy.oauth2.SpotifyOauthError:
                 msg = QMessageBox()
