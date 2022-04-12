@@ -397,19 +397,8 @@ class Ui_MainWindow(object):
             msg.setIcon(msg.Critical)
             msg.exec()
             return
+
         try:
-            done = False
-            #here is the animation
-            def animate():
-                for c in itertools.cycle(['|', '/', '-', '\\']):
-                    if done:
-                        break
-                    sys.stdout.write('\rloading ' + c)
-                    sys.stdout.flush()
-                    time.sleep(0.1)
-                sys.stdout.write('\rDone!     ')
-            t = threading.Thread(target=animate)
-            t.start()
 
             self.load_credentials()
             if self.set_choice() != -2 and self.set_choice() != -3 and self.set_choice() != -4:
@@ -429,6 +418,18 @@ class Ui_MainWindow(object):
                 msg.exec()
                 return
 
+            done = False ############# sperimental animation starts here
+            #here is the animation
+            def animate():
+                for c in itertools.cycle(['|', '/', '-', '\\']):
+                    if done:
+                        break
+                    sys.stdout.write('\rloading ' + c)
+                    sys.stdout.flush()
+                    time.sleep(0.1)
+                sys.stdout.write('\rDone!     ')
+            t = threading.Thread(target=animate)
+            t.start()
 
             if self.set_choice() == -2:
 
@@ -447,7 +448,9 @@ class Ui_MainWindow(object):
                 if self.export_choice() == -2:
 
                     export_csv(dataframe, av_df, working_directory, file_name='top_tracks')
+
                 done = True
+
             if self.set_choice() == -3:
 
                 dataframe = top_artist(self.time_choice(), self.song_num())
@@ -465,6 +468,9 @@ class Ui_MainWindow(object):
 
                     export_csv(dataframe, working_directory, file_name='top_artists')
 
+                done = True
+
+
             if self.set_choice() == -4:
 
                 data_retrieved = last_played(self.song_num())
@@ -481,6 +487,8 @@ class Ui_MainWindow(object):
                 if self.export_choice() == -2:
 
                     export_csv(dataframe, av_df, working_directory, file_name='tracks_history')
+
+                done = True
 
         except spotipy.oauth2.SpotifyOauthError:
                 msg = QMessageBox()
