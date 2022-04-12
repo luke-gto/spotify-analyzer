@@ -4,7 +4,11 @@ import webbrowser
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from pathlib import Path
 
+d = str(Path(__file__).resolve().parents[1])
+
+print(d)
 class average_window(QWidget):
 
     def __init__(self, dataframe):
@@ -57,10 +61,10 @@ class Ui_tableWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(866, 702)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("resources/images/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        icon.addPixmap(QtGui.QPixmap(d + "/resources/images/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         MainWindow.setWindowIcon(icon)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../resources/images/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(d + "/resources/images/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")

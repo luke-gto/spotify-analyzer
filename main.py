@@ -17,10 +17,11 @@ import os
 import pandas as pd
 import webbrowser
 import sys
+from pathlib import Path
 
-
+home = str(Path.home())
 script_directory = os.path.dirname(os.path.realpath(__file__))
-working_directory = script_directory + '/spotify-analyzer-data'
+working_directory = home + '/spotify-analyzer-data'
 
 def setup_directories():
     if os.path.isdir(working_directory):
