@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -366,7 +367,6 @@ class Ui_MainWindow(object):
         self.client_line.editingFinished.connect(self.save_client_id)
         self.secret_line.editingFinished.connect(self.save_client_secret)
         self.URI_line.editingFinished.connect(self.save_URI)
-        
 
         self.saved_credentials_button.clicked.connect(self.load_credentials)
 
@@ -376,11 +376,11 @@ class Ui_MainWindow(object):
         self.start_button.clicked.connect(self.start_analyze)
 
 
-    def conflict_check(self): ### check whether last played and time range is selecres at the same time --- but how?
+    def conflict_check(self): ### check whether last played and time range is selected at the same time --- but how?
         if self.history_button.pressed and self.button_time_Group.buttonPressed:
             msg = QMessageBox()
             msg.setWindowTitle("Ooops!")
-            msg.setText("No time range available for latest tracks data")
+            msg.setText("This option is not available for 'Last played songs'")
             msg.setIcon(msg.Critical)
             msg.exec()
 
@@ -404,6 +404,14 @@ class Ui_MainWindow(object):
                 msg.setWindowTitle("Ooooops!")
                 msg.setText("Choose an option first")
                 msg.setIcon(msg.Information)
+                msg.exec()
+                return
+
+            if self.song_num() == '' or int(self.song_num()) > 50:   ### check correct number of songs BEFORE continuing to execute the script
+                msg = QMessageBox()
+                msg.setWindowTitle("Ooops!")
+                msg.setText("Wrong number of songs selected. Max = 50")
+                msg.setIcon(msg.Warning)
                 msg.exec()
                 return
 
@@ -492,15 +500,7 @@ class Ui_MainWindow(object):
 
     def song_num(self):
         num = self.songs_num_line.text()
-        if num == '':
-            msg = QMessageBox()
-            msg.setWindowTitle("Ooops!")
-            msg.setText("Enter the number of songs you want to analyze")
-            msg.setIcon(msg.Warning)
-            msg.exec()
-            return
-        else:
-            return num
+        return num
 
 
     def load_credentials(self):
@@ -570,7 +570,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Spotify Data Retriever"))
         self.time_range_label.setText(_translate("MainWindow", "Select the time range"))
-        self.songs_num_label.setText(_translate("MainWindow", "How many songs do you want to retrieve?"))
+        self.songs_num_label.setText(_translate("MainWindow", "How many songs do you want to retrieve? Max = 50"))
         self.analysis_type_label.setText(_translate("MainWindow", "Select the type of analysis"))
         self.pushButton.setStatusTip(_translate("MainWindow", "Analyze your favorite songs"))
         self.pushButton.setText(_translate("MainWindow", "Top tracks"))
