@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from tkinter import Widget
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -79,21 +80,22 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.analysis_type_label.setFont(font)
         self.analysis_type_label.setObjectName("analysis_type_label")
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton = QtWidgets.QRadioButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(150, 240, 100, 33))
         self.pushButton.setCheckable(True)
         self.pushButton.setObjectName("pushButton")
+
         self.choice_button_group = QtWidgets.QButtonGroup(MainWindow)
         self.choice_button_group.setObjectName("choice_button_group")
         self.choice_button_group.addButton(self.pushButton)
-        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_2 = QtWidgets.QRadioButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(450, 240, 95, 33))
         self.pushButton_2.setCheckable(True)
         self.pushButton_2.setObjectName("pushButton_2")
         self.choice_button_group.addButton(self.pushButton_2)
 
 
-        self.history_button = QtWidgets.QPushButton(self.centralwidget)
+        self.history_button = QtWidgets.QRadioButton(self.centralwidget)
         self.history_button.setGeometry(QtCore.QRect(287, 240, 120, 33))
         self.history_button.setCheckable(True)
         self.history_button.setObjectName("history_button")
@@ -107,20 +109,33 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.analysis_type_label_2.setFont(font)
         self.analysis_type_label_2.setObjectName("analysis_type_label_2")
-        self.csv_button = QtWidgets.QPushButton(self.centralwidget)
+        self.csv_button = QtWidgets.QRadioButton(self.centralwidget)
         self.csv_button.setGeometry(QtCore.QRect(200, 500, 95, 33))
         self.csv_button.setCheckable(True)
         self.csv_button.setObjectName("csv_button")
         self.export_button_group = QtWidgets.QButtonGroup(MainWindow)
         self.export_button_group.setObjectName("export_button_group")
         self.export_button_group.addButton(self.csv_button)
-        self.ods_button = QtWidgets.QPushButton(self.centralwidget)
+        self.ods_button = QtWidgets.QRadioButton(self.centralwidget)
         self.ods_button.setGeometry(QtCore.QRect(400, 500, 95, 33))
         self.ods_button.setCheckable(True)
         self.ods_button.setObjectName("ods_button")
         self.export_button_group.addButton(self.ods_button)
         self.start_button = QtWidgets.QPushButton(self.centralwidget)
-        self.start_button.setGeometry(QtCore.QRect(240, 570, 231, 51))
+        self.start_button.setGeometry(QtCore.QRect(240, 560, 231, 51))
+
+        self.reload_button = QtWidgets.QPushButton(self.centralwidget)
+        self.reload_button.setGeometry(QtCore.QRect(240, 620, 231, 51))
+
+
+
+
+        palette2 = QtGui.QPalette()
+        brush2 = QtGui.QBrush(QtGui.QColor(255, 0, 0))
+        brush2.setStyle(QtCore.Qt.SolidPattern)
+        palette2.setBrush(QtGui.QPalette.Active, QtGui.QPalette.WindowText, brush2)
+
+
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -267,6 +282,7 @@ class Ui_MainWindow(object):
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.PlaceholderText, brush)
         self.start_button.setPalette(palette)
+        self.reload_button.setPalette(palette2)
         font = QtGui.QFont()
         font.setPointSize(22)
         font.setBold(True)
@@ -274,6 +290,12 @@ class Ui_MainWindow(object):
         self.start_button.setFont(font)
         self.start_button.setAutoFillBackground(False)
         self.start_button.setObjectName("start_button")
+
+        self.reload_button.setFont(font)
+        self.reload_button.setAutoFillBackground(False)
+        self.reload_button.setObjectName("reload_button")
+
+
         self.saved_credentials_button = QtWidgets.QPushButton(self.centralwidget)
         self.saved_credentials_button.setGeometry(QtCore.QRect(310, 60, 301, 71))
         font = QtGui.QFont()
@@ -314,7 +336,7 @@ class Ui_MainWindow(object):
         self.URI_line.setClearButtonEnabled(True)
         self.URI_line.setObjectName("URI_line")
         self.gridLayout.addWidget(self.URI_line, 5, 0, 1, 1)
-        self.medium_button = QtWidgets.QPushButton(self.centralwidget)
+        self.medium_button = QtWidgets.QRadioButton(self.centralwidget)
         self.medium_button.setGeometry(QtCore.QRect(296, 410, 110, 33))
         font = QtGui.QFont()
         font.setBold(False)
@@ -326,7 +348,7 @@ class Ui_MainWindow(object):
         self.button_time_Group = QtWidgets.QButtonGroup(MainWindow)
         self.button_time_Group.setObjectName("button_time_Group")
         self.button_time_Group.addButton(self.medium_button)
-        self.long_button = QtWidgets.QPushButton(self.centralwidget)
+        self.long_button = QtWidgets.QRadioButton(self.centralwidget)
         self.long_button.setGeometry(QtCore.QRect(520, 410, 95, 33))
         font = QtGui.QFont()
         font.setBold(False)
@@ -335,7 +357,7 @@ class Ui_MainWindow(object):
         self.long_button.setCheckable(True)
         self.long_button.setObjectName("long_button")
         self.button_time_Group.addButton(self.long_button)
-        self.short_button = QtWidgets.QPushButton(self.centralwidget)
+        self.short_button = QtWidgets.QRadioButton(self.centralwidget)
         self.short_button.setGeometry(QtCore.QRect(80, 410, 102, 33))
         font = QtGui.QFont()
         font.setBold(False)
@@ -377,11 +399,15 @@ class Ui_MainWindow(object):
         self.choice_button_group.buttonClicked.connect(self.set_choice)
         self.export_button_group.buttonClicked.connect(self.export_choice)
         self.start_button.clicked.connect(self.start_analyze)
+        self.reload_button.clicked.connect(self.reload_app)
 
+    def reload_app(self):
+        os.execl(sys.executable, sys.executable, *sys.argv)
 
     def open_guide(self):
         webbrowser.open('https://luke-gto.github.io/spotify-analyzer/')
-    
+                
+
     def openWindow(self, dataframe, av_df):
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_tableWindow(dataframe, av_df)
@@ -396,6 +422,7 @@ class Ui_MainWindow(object):
             msg.setText("The time range option is not available for 'Last played songs'")
             msg.setIcon(msg.Critical)
             msg.exec()
+
             return
 
         try:
@@ -606,6 +633,7 @@ class Ui_MainWindow(object):
         self.csv_button.setText(_translate("MainWindow", ".csv File"))
         self.ods_button.setText(_translate("MainWindow", ".xlsx File"))
         self.start_button.setText(_translate("MainWindow", "START"))
+        self.reload_button.setText(_translate("MainWindow", "RELOAD APP"))
         self.saved_credentials_button.setStatusTip(_translate("MainWindow", "Only if you\'ve already used this tool"))
         self.saved_credentials_button.setText(_translate("MainWindow", "Load saved credentials"))
         self.client_label.setText(_translate("MainWindow", "Enter Spotify Client ID"))
