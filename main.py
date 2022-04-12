@@ -20,8 +20,6 @@ import webbrowser
 script_directory = os.path.dirname(os.path.realpath(__file__))
 working_directory = script_directory + '/spotify-analyzer-data'
 
-print(working_directory)
-
 def setup_directories():
     if os.path.isdir(working_directory):
         pass
@@ -41,7 +39,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.time_range_label = QtWidgets.QLabel(self.centralwidget)
-        self.time_range_label.setGeometry(QtCore.QRect(268, 380, 165, 17))
+        self.time_range_label.setGeometry(QtCore.QRect(171, 380, 340, 17))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -56,7 +54,7 @@ class Ui_MainWindow(object):
         self.time_range_label.setAlignment(QtCore.Qt.AlignCenter)
         self.time_range_label.setObjectName("time_range_label")
         self.songs_num_label = QtWidgets.QLabel(self.centralwidget)
-        self.songs_num_label.setGeometry(QtCore.QRect(190, 300, 311, 17))
+        self.songs_num_label.setGeometry(QtCore.QRect(182, 300, 318, 17))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
@@ -76,7 +74,7 @@ class Ui_MainWindow(object):
         self.analysis_type_label.setFont(font)
         self.analysis_type_label.setObjectName("analysis_type_label")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(150, 240, 95, 33))
+        self.pushButton.setGeometry(QtCore.QRect(150, 240, 100, 33))
         self.pushButton.setCheckable(True)
         self.pushButton.setObjectName("pushButton")
         self.choice_button_group = QtWidgets.QButtonGroup(MainWindow)
@@ -94,7 +92,6 @@ class Ui_MainWindow(object):
         self.history_button.setCheckable(True)
         self.history_button.setObjectName("history_button")
         self.choice_button_group.addButton(self.history_button)
-
 
 
         self.analysis_type_label_2 = QtWidgets.QLabel(self.centralwidget)
@@ -376,15 +373,6 @@ class Ui_MainWindow(object):
         self.start_button.clicked.connect(self.start_analyze)
 
 
-    def conflict_check(self): ### check whether last played and time range is selected at the same time --- but how?
-        if self.history_button.pressed and self.button_time_Group.buttonPressed:
-            msg = QMessageBox()
-            msg.setWindowTitle("Ooops!")
-            msg.setText("This option is not available for 'Last played songs'")
-            msg.setIcon(msg.Critical)
-            msg.exec()
-
-
     def open_guide(self):
         webbrowser.open('https://luke-gto.github.io/spotify-analyzer/')
     
@@ -403,7 +391,16 @@ class Ui_MainWindow(object):
                 msg = QMessageBox()
                 msg.setWindowTitle("Ooooops!")
                 msg.setText("Choose an option first")
-                msg.setIcon(msg.Information)
+                msg.setIcon(msg.Warning)
+                msg.exec()
+                return
+
+            if self.history_button.pressed and self.button_time_Group.buttonPressed:  ### check whether last played and time range is selected at the same time --- but how?
+
+                msg = QMessageBox()
+                msg.setWindowTitle("Ooops!")
+                msg.setText("The time range option is not available for 'Last played songs'")
+                msg.setIcon(msg.Critical)
                 msg.exec()
                 return
 
@@ -547,7 +544,7 @@ class Ui_MainWindow(object):
     def exit_app(self):
         sys.exit()
 
-    def save_client_id(self):    ### save user input
+    def save_client_id(self):    ### save user input section
         config_file = working_directory + "/.env"
         user_input = self.client_line.text()
         dotenv.set_key(config_file, "SPOTIPY_CLIENT_ID", user_input)
@@ -564,12 +561,12 @@ class Ui_MainWindow(object):
         user_input = self.URI_line.text()
         dotenv.set_key(config_file, "SPOTIPY_REDIRECT_URI", user_input)
         return 1
-
+                                                ### save user input section ends here
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Spotify Data Retriever"))
-        self.time_range_label.setText(_translate("MainWindow", "Select the time range"))
+        self.time_range_label.setText(_translate("MainWindow", "Select the time range - NOT FOR LAST PLAYED SONGS"))
         self.songs_num_label.setText(_translate("MainWindow", "How many songs do you want to retrieve? Max = 50"))
         self.analysis_type_label.setText(_translate("MainWindow", "Select the type of analysis"))
         self.pushButton.setStatusTip(_translate("MainWindow", "Analyze your favorite songs"))
