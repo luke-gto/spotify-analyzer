@@ -17,6 +17,12 @@ import os
 import pandas as pd
 import webbrowser
 
+import itertools
+import threading
+import time
+import sys
+
+
 script_directory = os.path.dirname(os.path.realpath(__file__))
 working_directory = script_directory + '/spotify-analyzer-data'
 
@@ -384,7 +390,27 @@ class Ui_MainWindow(object):
 
     def start_analyze(self):
 
+        if self.button_time_Group.checkedId() != 1 and self.set_choice() == -4: ### check whether last played and time range is selected at the same time
+            msg = QMessageBox()
+            msg.setWindowTitle("Ooops!")
+            msg.setText("The time range option is not available for 'Last played songs'")
+            msg.setIcon(msg.Critical)
+            msg.exec()
+            return
         try:
+            done = False
+            #here is the animation
+            def animate():
+                for c in itertools.cycle(['|', '/', '-', '\\']):
+                    if done:
+                        break
+                    sys.stdout.write('\rloading ' + c)
+                    sys.stdout.flush()
+                    time.sleep(0.1)
+                sys.stdout.write('\rDone!     ')
+            t = threading.Thread(target=animate)
+            t.start()
+
             self.load_credentials()
             if self.set_choice() != -2 and self.set_choice() != -3 and self.set_choice() != -4:
 
@@ -392,15 +418,6 @@ class Ui_MainWindow(object):
                 msg.setWindowTitle("Ooooops!")
                 msg.setText("Choose an option first")
                 msg.setIcon(msg.Warning)
-                msg.exec()
-                return
-
-            if self.history_button.pressed and self.button_time_Group.buttonPressed:  ### check whether last played and time range is selected at the same time --- but how?
-
-                msg = QMessageBox()
-                msg.setWindowTitle("Ooops!")
-                msg.setText("The time range option is not available for 'Last played songs'")
-                msg.setIcon(msg.Critical)
                 msg.exec()
                 return
 
@@ -430,7 +447,7 @@ class Ui_MainWindow(object):
                 if self.export_choice() == -2:
 
                     export_csv(dataframe, av_df, working_directory, file_name='top_tracks')
-
+                done = True
             if self.set_choice() == -3:
 
                 dataframe = top_artist(self.time_choice(), self.song_num())
@@ -493,7 +510,6 @@ class Ui_MainWindow(object):
             return "medium_term"
         if key == -3:
             return "long_term"
-
 
     def song_num(self):
         num = self.songs_num_line.text()
