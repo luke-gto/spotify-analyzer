@@ -395,6 +395,7 @@ class Ui_MainWindow(object):
         self.export_button_group.buttonClicked.connect(self.export_choice)
         self.start_button.clicked.connect(self.start_analyze)
         self.reload_button.clicked.connect(self.reload_app)
+        
 
     def reload_app(self):
         os.execl(sys.executable, sys.executable, *sys.argv)
@@ -411,10 +412,11 @@ class Ui_MainWindow(object):
 
     def start_analyze(self):
 
+
         if self.button_time_Group.checkedId() == 4 or self.button_time_Group.checkedId() == 2 or self.button_time_Group.checkedId() == 3 and self.set_choice() == -4: ### check whether last played and time range is selected at the same time
             msg = QMessageBox()
             msg.setWindowTitle("Ooops!")
-            msg.setText("The time range option is not available for 'Last played songs'")
+            msg.setText("The time range option is not available for 'Last played songs'. Reload the app please.")
             msg.setIcon(msg.Critical)
             msg.exec()
 
