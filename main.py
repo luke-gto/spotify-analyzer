@@ -22,6 +22,7 @@ from pathlib import Path
 home = str(Path.home())
 script_directory = os.path.dirname(os.path.realpath(__file__))
 working_directory = home + '/spotify-analyzer-data'
+env_file = script_directory + "/.env"
 
 def setup_directories():
     if os.path.isdir(working_directory):
@@ -531,9 +532,9 @@ class Ui_MainWindow(object):
 
         msg = QMessageBox()
 
-        if os.path.isfile(working_directory + '/.env'):
+        if os.path.isfile(script_directory + '/.env'):
 
-            dotenv_path = join(working_directory, '.env')
+            dotenv_path = join(script_directory, '.env')
             load_dotenv(dotenv_path)
             SPOTIPY_CLIENT_ID = os.environ.get("SPOTIPY_CLIENT_ID")
             SPOTIPY_CLIENT_SECRET = os.environ.get("SPOTIPY_CLIENT_SECRET")
@@ -554,16 +555,16 @@ class Ui_MainWindow(object):
                 msg.setText("Credentials not valid. Pleae fill the form again.")
                 msg.setIcon(msg.Critical)
                 msg.exec()
-                if os.path.exists(working_directory + "/.env"):
-                    os.remove(working_directory + "/.env")
+                if os.path.exists(env_file):
+                    os.remove(env_file)
         else:
             msg.setWindowTitle("ERROR")
             msg.setText("Credentials not found. Pleae fill the form again.")
             msg.setIcon(msg.Critical)
             msg.exec()
 
-            if os.path.exists(working_directory + "/.env"):
-                os.remove(working_directory + "/.env")
+            if os.path.exists(env_file):
+                os.remove(env_file)
             self.client_line.setText('')
             self.secret_line.setText('')
             self.URI_line.setText('')
@@ -572,19 +573,19 @@ class Ui_MainWindow(object):
         sys.exit()
 
     def save_client_id(self):    ### save user input section
-        config_file = working_directory + "/.env"
+        config_file = env_file
         user_input = self.client_line.text()
         dotenv.set_key(config_file, "SPOTIPY_CLIENT_ID", user_input)
         return 1
 
     def save_client_secret(self):
-        config_file = working_directory + "/.env"
+        config_file = env_file
         user_input = self.secret_line.text()
         dotenv.set_key(config_file, "SPOTIPY_CLIENT_SECRET", user_input)
         return 1
 
     def save_URI(self):
-        config_file = working_directory + "/.env"
+        config_file = env_file
         user_input = self.URI_line.text()
         dotenv.set_key(config_file, "SPOTIPY_REDIRECT_URI", user_input)
         return 1
