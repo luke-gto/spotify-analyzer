@@ -442,6 +442,13 @@ class Ui_MainWindow(object):
                 msg.exec()
                 return
 
+            msg = QMessageBox()
+            msg.setWindowTitle("Whoooa!")
+            msg.setText("I'm working, DON'T PANIC if it seems like I'm hang up!")
+            msg.setIcon(msg.Information)
+            msg.exec()
+
+
             if self.set_choice() == -2:
 
                 data_retrieved = tracks_analyzer(self.time_choice(), self.song_num())
