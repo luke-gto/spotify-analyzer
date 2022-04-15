@@ -9,11 +9,6 @@ except ImportError:
 else:
     include_files = get_qt_plugins_paths("PyQt5", "platforms")
 
-base=None
-
-if sys.platform == 'Win32':
-    base='Win32GUI'
-
 build_exe_options = {
     "excludes": ["tkinter"],
     "include_files": include_files,
@@ -27,12 +22,13 @@ bdist_dmg_options = {
     "volume_label": "TEST",
 }
 
-executables = [Executable("main.py", base=base, target_name="Spotify_Analyzer.exe", icon="resources/images/icon.png", shortcutName="Spotify Analyzer", shortcutDir="DesktopFolder")]
+executables = [Executable("main.py", base="Win32GUI", target_name="Spotify_Analyzer.exe", icon="resources/images/icon.ico", shortcutName="Spotify Analyzer", shortcutDir="ProgramMenuFolder")]
 
 setup(
     name="Spotify Analyzer",
     version="0.0.1",
     description="A buggy Spotify userdata retriever",
+    summary_data={"author": "luke-gto @github"},
     options={
         "build_exe": build_exe_options,
         "bdist_mac": bdist_mac_options,
