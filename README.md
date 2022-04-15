@@ -2,6 +2,8 @@
 
 You can use this tool to retrieve data about your listening history on Spotify, export them in a .csv or .xlsx file and do some lovely analysis.
 
+You can download the binary files (only for Windows) in the [Releases page](https://github.com/luke-gto/spotify-analyzer/releases).
+
 This tools uses the official Spotify Web API and in order to access them you have to:
 
 1. Go to the [Dashboard](https://developer.spotify.com/dashboard/login) page at the *Spotify Developer website* and, if necessary, log in.
