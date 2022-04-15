@@ -27,12 +27,12 @@ bdist_dmg_options = {
     "volume_label": "TEST",
 }
 
-executables = [Executable("main.py", base=base, target_name="Spotify_Data_Retriever.exe")]
+executables = [Executable("main.py", base=base, target_name="Spotify_Analyzer.exe", icon="resources/images/icon.png", shortcutName="Spotify Analyzer", shortcutDir="DesktopFolder")]
 
 setup(
-    name="Spotify Data Retriever",
-    version="0.1",
-    description="A buggy Spotify Data Retriever",
+    name="Spotify Analyzer",
+    version="0.0.1",
+    description="A buggy Spotify userdata retriever",
     options={
         "build_exe": build_exe_options,
         "bdist_mac": bdist_mac_options,
