@@ -11,7 +11,13 @@ import dotenv
 from PyQt5.QtWidgets import QMessageBox, QHBoxLayout
 from PyQt5.QtWidgets import QPushButton
 from src.table import Ui_tableWindow
-from src.spotify_analyzer import tracks_analyzer, top_artist, last_played, export_csv, export_ods
+from src.spotify_analyzer import (
+    tracks_analyzer,
+    top_artist,
+    last_played,
+    export_csv,
+    export_ods,
+)
 import spotipy
 import os
 import pandas as pd
@@ -21,8 +27,9 @@ from pathlib import Path
 
 home = str(Path.home())
 script_directory = os.path.dirname(os.path.realpath(__file__))
-working_directory = home + '/spotify-analyzer-data'
+working_directory = home + "/spotify-analyzer-data"
 env_file = script_directory + "/.env"
+
 
 def setup_directories():
     if os.path.isdir(working_directory):
@@ -30,12 +37,17 @@ def setup_directories():
     else:
         os.mkdir(working_directory)
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(683, 732)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(script_directory + "/resources/images/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(
+            QtGui.QPixmap(script_directory + "/resources/images/icon.png"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         MainWindow.setWindowIcon(icon)
         MainWindow.setInputMethodHints(QtCore.Qt.ImhNone)
         MainWindow.setIconSize(QtCore.QSize(24, 24))
@@ -44,10 +56,14 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.time_range_label = QtWidgets.QLabel(self.centralwidget)
         self.time_range_label.setGeometry(QtCore.QRect(140, 380, 400, 17))
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.time_range_label.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.time_range_label.sizePolicy().hasHeightForWidth()
+        )
         self.time_range_label.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setPointSize(10)
@@ -91,13 +107,11 @@ class Ui_MainWindow(object):
         self.pushButton_2.setObjectName("pushButton_2")
         self.choice_button_group.addButton(self.pushButton_2)
 
-
         self.history_button = QtWidgets.QRadioButton(self.centralwidget)
         self.history_button.setGeometry(QtCore.QRect(287, 240, 120, 33))
         self.history_button.setCheckable(True)
         self.history_button.setObjectName("history_button")
         self.choice_button_group.addButton(self.history_button)
-
 
         self.analysis_type_label_2 = QtWidgets.QLabel(self.centralwidget)
         self.analysis_type_label_2.setGeometry(QtCore.QRect(260, 470, 181, 17))
@@ -124,12 +138,10 @@ class Ui_MainWindow(object):
         self.reload_button = QtWidgets.QPushButton(self.centralwidget)
         self.reload_button.setGeometry(QtCore.QRect(240, 620, 231, 51))
 
-
         palette2 = QtGui.QPalette()
         brush2 = QtGui.QBrush(QtGui.QColor(255, 0, 0))
         brush2.setStyle(QtCore.Qt.SolidPattern)
         palette2.setBrush(QtGui.QPalette.Active, QtGui.QPalette.WindowText, brush2)
-
 
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
@@ -290,7 +302,6 @@ class Ui_MainWindow(object):
         self.reload_button.setAutoFillBackground(False)
         self.reload_button.setObjectName("reload_button")
 
-
         self.saved_credentials_button = QtWidgets.QPushButton(self.centralwidget)
         self.saved_credentials_button.setGeometry(QtCore.QRect(310, 60, 301, 71))
         font = QtGui.QFont()
@@ -395,14 +406,12 @@ class Ui_MainWindow(object):
         self.export_button_group.buttonClicked.connect(self.export_choice)
         self.start_button.clicked.connect(self.start_analyze)
         self.reload_button.clicked.connect(self.reload_app)
-        
 
     def reload_app(self):
         os.execl(sys.executable, sys.executable, *sys.argv)
 
     def open_guide(self):
-        webbrowser.open('https://luke-gto.github.io/spotify-analyzer/')
-                
+        webbrowser.open("https://luke-gto.github.io/spotify-analyzer/")
 
     def openWindow(self, dataframe, av_df):
         self.window = QtWidgets.QMainWindow()
@@ -412,11 +421,17 @@ class Ui_MainWindow(object):
 
     def start_analyze(self):
 
-
-        if self.button_time_Group.checkedId() == 4 or self.button_time_Group.checkedId() == 2 or self.button_time_Group.checkedId() == 3 and self.set_choice() == -4: ### check whether last played and time range is selected at the same time
+        if (
+            self.button_time_Group.checkedId() == 4
+            or self.button_time_Group.checkedId() == 2
+            or self.button_time_Group.checkedId() == 3
+            and self.set_choice() == -4
+        ):  ### check whether last played and time range is selected at the same time
             msg = QMessageBox()
             msg.setWindowTitle("Ooops!")
-            msg.setText("The time range option is not available for 'Last played songs'. Reload the app please.")
+            msg.setText(
+                "The time range option is not available for 'Last played songs'. Reload the app please."
+            )
             msg.setIcon(msg.Critical)
             msg.exec()
 
@@ -425,7 +440,11 @@ class Ui_MainWindow(object):
         try:
 
             self.load_credentials()
-            if self.set_choice() != -2 and self.set_choice() != -3 and self.set_choice() != -4:
+            if (
+                self.set_choice() != -2
+                and self.set_choice() != -3
+                and self.set_choice() != -4
+            ):
 
                 msg = QMessageBox()
                 msg.setWindowTitle("Ooooops!")
@@ -434,7 +453,9 @@ class Ui_MainWindow(object):
                 msg.exec()
                 return
 
-            if self.song_num() == '' or int(self.song_num()) > 50:   ### check correct number of songs BEFORE continuing to execute the script
+            if (
+                self.song_num() == "" or int(self.song_num()) > 50
+            ):  ### check correct number of songs BEFORE continuing to execute the script
                 msg = QMessageBox()
                 msg.setWindowTitle("Ooops!")
                 msg.setText("Wrong number of songs selected. Max = 50")
@@ -448,7 +469,6 @@ class Ui_MainWindow(object):
             msg.setIcon(msg.Information)
             msg.exec()
 
-
             if self.set_choice() == -2:
 
                 data_retrieved = tracks_analyzer(self.time_choice(), self.song_num())
@@ -458,15 +478,17 @@ class Ui_MainWindow(object):
                 Ui_tableWindow(dataframe, av_df)
                 self.openWindow(dataframe, av_df)
 
-
                 if self.export_choice() == -3:
 
-                    export_ods(dataframe, av_df, working_directory, file_name='top_tracks')
+                    export_ods(
+                        dataframe, av_df, working_directory, file_name="top_tracks"
+                    )
 
                 if self.export_choice() == -2:
 
-                    export_csv(dataframe, av_df, working_directory, file_name='top_tracks')
-
+                    export_csv(
+                        dataframe, av_df, working_directory, file_name="top_tracks"
+                    )
 
             if self.set_choice() == -3:
 
@@ -478,13 +500,11 @@ class Ui_MainWindow(object):
 
                 if self.export_choice() == -3:
 
-                    export_ods(dataframe, working_directory, file_name='top_artists')
-
+                    export_ods(dataframe, working_directory, file_name="top_artists")
 
                 if self.export_choice() == -2:
 
-                    export_csv(dataframe, working_directory, file_name='top_artists')
-
+                    export_csv(dataframe, working_directory, file_name="top_artists")
 
             if self.set_choice() == -4:
 
@@ -497,36 +517,37 @@ class Ui_MainWindow(object):
 
                 if self.export_choice() == -3:
 
-                    export_ods(dataframe, av_df, working_directory, file_name='tracks_history')
+                    export_ods(
+                        dataframe, av_df, working_directory, file_name="tracks_history"
+                    )
 
                 if self.export_choice() == -2:
 
-                    export_csv(dataframe, av_df, working_directory, file_name='tracks_history')
+                    export_csv(
+                        dataframe, av_df, working_directory, file_name="tracks_history"
+                    )
 
         except spotipy.oauth2.SpotifyOauthError:
-                msg = QMessageBox()
-                msg.setWindowTitle("Ooops!")
-                msg.setText("Invalid credentials. Try again.")
-                msg.setIcon(msg.Critical)
-                msg.exec()
-                return
-
+            msg = QMessageBox()
+            msg.setWindowTitle("Ooops!")
+            msg.setText("Invalid credentials. Try again.")
+            msg.setIcon(msg.Critical)
+            msg.exec()
+            return
 
     def export_choice(self):
 
         key = self.export_button_group.checkedId()
         return key
 
-
-    def set_choice(self): ### first row buttons --- which one is pressed?
+    def set_choice(self):  ### first row buttons --- which one is pressed?
         key = self.choice_button_group.checkedId()
-        return key      
-
+        return key
 
     def time_choice(self):
         key = self.button_time_Group.checkedId()
         if key == -4:
-            return 'short_term'
+            return "short_term"
         if key == -2:
             return "medium_term"
         if key == -3:
@@ -536,20 +557,23 @@ class Ui_MainWindow(object):
         num = self.songs_num_line.text()
         return num
 
-
     def load_credentials(self):
 
         msg = QMessageBox()
 
-        if os.path.isfile(script_directory + '/.env'):
+        if os.path.isfile(script_directory + "/.env"):
 
-            dotenv_path = join(script_directory, '.env')
+            dotenv_path = join(script_directory, ".env")
             load_dotenv(dotenv_path)
             SPOTIPY_CLIENT_ID = os.environ.get("SPOTIPY_CLIENT_ID")
             SPOTIPY_CLIENT_SECRET = os.environ.get("SPOTIPY_CLIENT_SECRET")
-            SPOTIPY_REDIRECT_URI= os.environ.get("SPOTIPY_REDIRECT_URI")
+            SPOTIPY_REDIRECT_URI = os.environ.get("SPOTIPY_REDIRECT_URI")
 
-            if SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET and SPOTIPY_REDIRECT_URI != "":
+            if (
+                SPOTIPY_CLIENT_ID
+                and SPOTIPY_CLIENT_SECRET
+                and SPOTIPY_REDIRECT_URI != ""
+            ):
 
                 msg.setWindowTitle("Yeah!")
                 msg.setText("Valid credentials found!")
@@ -574,14 +598,14 @@ class Ui_MainWindow(object):
 
             if os.path.exists(env_file):
                 os.remove(env_file)
-            self.client_line.setText('')
-            self.secret_line.setText('')
-            self.URI_line.setText('')
+            self.client_line.setText("")
+            self.secret_line.setText("")
+            self.URI_line.setText("")
 
     def exit_app(self):
         sys.exit()
 
-    def save_client_id(self):    ### save user input section
+    def save_client_id(self):  ### save user input section
         config_file = env_file
         user_input = self.client_line.text()
         dotenv.set_key(config_file, "SPOTIPY_CLIENT_ID", user_input)
@@ -598,39 +622,66 @@ class Ui_MainWindow(object):
         user_input = self.URI_line.text()
         dotenv.set_key(config_file, "SPOTIPY_REDIRECT_URI", user_input)
         return 1
-                                                ### save user input section ends here
+        ### save user input section ends here
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Spotify Data Retriever"))
-        self.time_range_label.setText(_translate("MainWindow", "Select the time range - NOT FOR LAST PLAYED SONGS"))
-        self.songs_num_label.setText(_translate("MainWindow", "How many songs do you want to retrieve? Max = 50"))
-        self.analysis_type_label.setText(_translate("MainWindow", "Select the type of analysis"))
-        self.pushButton.setStatusTip(_translate("MainWindow", "Analyze your favorite songs"))
+        self.time_range_label.setText(
+            _translate(
+                "MainWindow", "Select the time range - NOT FOR LAST PLAYED SONGS"
+            )
+        )
+        self.songs_num_label.setText(
+            _translate("MainWindow", "How many songs do you want to retrieve? Max = 50")
+        )
+        self.analysis_type_label.setText(
+            _translate("MainWindow", "Select the type of analysis")
+        )
+        self.pushButton.setStatusTip(
+            _translate("MainWindow", "Analyze your favorite songs")
+        )
         self.pushButton.setText(_translate("MainWindow", "Top tracks"))
-        self.pushButton_2.setStatusTip(_translate("MainWindow", "Retrieve your favorite artists"))
+        self.pushButton_2.setStatusTip(
+            _translate("MainWindow", "Retrieve your favorite artists")
+        )
         self.pushButton_2.setText(_translate("MainWindow", "Top artists"))
 
-        self.history_button.setStatusTip(_translate("MainWindow", "Retrieve your last played songs"))
+        self.history_button.setStatusTip(
+            _translate("MainWindow", "Retrieve your last played songs")
+        )
         self.history_button.setText(_translate("MainWindow", "Last played songs"))
 
-
-        self.analysis_type_label_2.setText(_translate("MainWindow", "Export data - Optional"))
+        self.analysis_type_label_2.setText(
+            _translate("MainWindow", "Export data - Optional")
+        )
         self.csv_button.setText(_translate("MainWindow", ".csv File"))
         self.ods_button.setText(_translate("MainWindow", ".xlsx File"))
         self.start_button.setText(_translate("MainWindow", "START"))
         self.reload_button.setText(_translate("MainWindow", "RELOAD APP"))
-        self.saved_credentials_button.setStatusTip(_translate("MainWindow", "Only if you\'ve already used this tool"))
-        self.saved_credentials_button.setText(_translate("MainWindow", "Load saved credentials"))
+        self.saved_credentials_button.setStatusTip(
+            _translate("MainWindow", "Only if you've already used this tool")
+        )
+        self.saved_credentials_button.setText(
+            _translate("MainWindow", "Load saved credentials")
+        )
         self.client_label.setText(_translate("MainWindow", "Enter Spotify Client ID"))
         self.secret_label.setText(_translate("MainWindow", "Enter Spotify Secret ID"))
-        self.secret_line.setStatusTip(_translate("MainWindow", "DO NOT SHARE THIS STRING"))
+        self.secret_line.setStatusTip(
+            _translate("MainWindow", "DO NOT SHARE THIS STRING")
+        )
         self.URI_label.setText(_translate("MainWindow", "Enter Spotify redirect URI"))
-        self.medium_button.setStatusTip(_translate("MainWindow", "Retrieve data from the last 6 months"))
+        self.medium_button.setStatusTip(
+            _translate("MainWindow", "Retrieve data from the last 6 months")
+        )
         self.medium_button.setText(_translate("MainWindow", "Medium term "))
-        self.long_button.setStatusTip(_translate("MainWindow", "Retrieve data from several years "))
+        self.long_button.setStatusTip(
+            _translate("MainWindow", "Retrieve data from several years ")
+        )
         self.long_button.setText(_translate("MainWindow", "Long term "))
-        self.short_button.setStatusTip(_translate("MainWindow", "Retrieve data from the last 4 weeks"))
+        self.short_button.setStatusTip(
+            _translate("MainWindow", "Retrieve data from the last 4 weeks")
+        )
         self.short_button.setText(_translate("MainWindow", "Short term "))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
         self.menuExit.setTitle(_translate("MainWindow", "Exit"))
@@ -638,7 +689,7 @@ class Ui_MainWindow(object):
         self.actionGuide.setText(_translate("MainWindow", "Guide"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     setup_directories()
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
