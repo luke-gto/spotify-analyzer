@@ -1,5 +1,7 @@
 ## Welcome to Spotify Analyzer
 
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 You can use this tool to retrieve data about your listening history on Spotify, export them in a .csv or .xlsx file and do some lovely analysis.
 
 You can download the binary files (only for Windows) in the [Releases page](https://github.com/luke-gto/spotify-analyzer/releases).
